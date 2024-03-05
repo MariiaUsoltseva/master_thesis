@@ -1,6 +1,6 @@
 ## Description
 
-Codes for the master's thesis titled "Effect of COral Reefs on Wave Energy and Wave Height"
+Codes for the master's thesis titled "Effect of Coral Reefs on Wave Energy and Wave Height"
 
 ## Codes included
 
