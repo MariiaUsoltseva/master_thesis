@@ -1,4 +1,8 @@
+## Description
+
 Codes for the master's thesis titled "Effect of COral Reefs on Wave Energy and Wave Height"
+
+## Codes included
 
 • common settings.py. - the file includes the year, region of interest and paths to
 folders with satellite and model data and reef extends.
@@ -15,9 +19,14 @@ on coral reefs, right before coral reefs and with wave height and energy attenua
 
 • statistics CCI.py, statistics ERA5.py, statistics ERA5 ontracks.py - calculates mean
 SWH attenuation, attenuation percentage and percentage of positive differences for
+
 each sea state ranging from 0.5 m to 9 m utilizing data from SeaState CCI dataset,
 ERA5 on a grid and ERA5 interpolated on altimetry tracks respectively.
 
 • coral cover.py - calculates mean SWH attenuation, attenuation percentage and per-
 centage of positive differences for two years with different coral reefs structural
 complexity for the region of interest.
+
+## Installation
+
+To create a python environment to run the codes use file environment.yml
