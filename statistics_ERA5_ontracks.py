@@ -46,83 +46,49 @@ gravity = 9.81
 start_time=time.time()
 energy_modeled_tr={}
 swh_modeled_tr={}
-
-'''differences_alt_m=[]
-attenuation_perecent_alt_m=[]
-differences_model=[]
-attenuation_perecent_model=[]
-'''
-#fig, ax, map_base = geo_plots(reefs,-180, 180, -30,  30)
-#fig_buf, ax_buf, map_buf = geo_plots(reefs,-180, 180, -30,  30)
-#fig_diff, ax_diff, map_diff = geo_plots(reefs, -180, 180, -30,  30)
-#for month in months:
 corr=[]
-ssl=[0.5]#, 1.25, 2.5, 4, 6]
-ssh=[1.25] #, 2.5, 4, 6, 9]
-month_folder='D:/thesis/ceda_data/2018/03'#.format(month)
+ssl=[0.5, 1.25, 2.5, 4, 6]
+ssh=[1.25, 2.5, 4, 6, 9]
+month_folder='D:/thesis/ceda_data/2018/{}'.format(month)
 for ss in range(len(ssl)):
-    print(ss)
+    print("Processing sea state ", ss)
     differences_swh=[]
     attenuation_perecent_swh=[]
     differences_energy=[]
     attenuation_perecent_energy=[]
     corr_ss=[]
-#for month in months:
-        #print(month)
-    month_folder='D:/thesis/ceda_data/2018/05'#{}'.format(month)
-    model='D:/thesis/model_data/model_2018_05.nc' #{}.nc'.format(month)
-    reference_time = datetime.datetime(2018, 5, 1, 0, 0, 0)
-    #month_folder='D:/thesis/ceda_data/2009/06'
-    #model='D:/thesis/model_data/model_2009_06.nc'
-    
-    mt_dict={}
-    for i in range(len(satellites)):      
-            print(i)       
-            pass_nums, pass_data_dict = sort_by_pass(month_folder, satellites[i], -180, 180, -30, 30) 
-            for num in pass_data_dict:
-                modeled_track_df, rmse, corr = modeled_track_new(model, reference_time, pass_data_dict[num])  
-                mt_dict[num]=modeled_track_df
-                corr_ss.append(corr[0])
-            buffer_filtered_mt, reef_filtered_mt, difference_swh_mt = filter_by_flags_seastate_mt(mt_dict, sat_flags, pass_nums, i, ssl=1, ssh=100)
-            #this is old and also unncess???
-            #diff_all, att_all, buffer_swh_sat, reef_swh_sat = filter_by_flags_seastate(pass_data_dict, sat_flags, pass_nums, i, ssl=1, ssh=100 )
-            #differences_swh=[*differences_swh, *diff_all]
-            #attenuation_perecent_swh=[*attenuation_perecent_swh, *att_all] 
-            #why twice???
-            #stats_mt, buffer_swh_mt, reef_swh_mt = filter_by_flags_seastate_mt(mt_dict, sat_flags, pass_nums, i, ssl=1, ssh=100)#is this incorrect?
-            
-            for num in difference_swh_mt:
-                    swhs_diff = difference_swh_mt[num]['diff_swh'].tolist()
-                    att_percent = difference_swh_mt[num]['att_swh'].tolist()
-                    diff_energy =  difference_swh_mt[num]['diff_energy'].tolist()
-                    att_energy =   difference_swh_mt[num]['att_energy'].tolist()
-                    differences_swh.extend(swhs_diff)
-                    attenuation_perecent_swh.extend(att_percent)
-                    differences_energy.extend(diff_energy)
-                    attenuation_perecent_energy.extend(att_energy)
-            '''or num in stats_mt:
-                diff_swh_mt=stats_mt[num]['diff_swh']
-                att_swh_mt=stats_mt[num]['att_swh']
-                diff_energy_mt=stats_mt[num]['diff_energy']
-                att_energy_mt=stats_mt[num]['att_energy']
+for month in months:
+        print('Processing month ', month)
+        month_folder='D:/thesis/ceda_data/2018/{}'.format(month)
+        model='D:/thesis/model_data/model_2018_{}.nc'.format(month)
+        reference_time = datetime.datetime(2018, 5, 1, 0, 0, 0)
+        
+        mt_dict={}
+        for i in range(len(satellites)):      
+                print(i)       
+                pass_nums, pass_data_dict = sort_by_pass(month_folder, satellites[i], -180, 180, -30, 30) 
+                for num in pass_data_dict:
+                    modeled_track_df, rmse, corr = modeled_track_new(model, reference_time, pass_data_dict[num])  
+                    mt_dict[num]=modeled_track_df
+                    corr_ss.append(corr[0])
+                buffer_filtered_mt, reef_filtered_mt, difference_swh_mt = filter_by_flags_seastate_mt(mt_dict, sat_flags, pass_nums, i, ssl=1, ssh=100)
+               
+                for num in difference_swh_mt:
+                        swhs_diff = difference_swh_mt[num]['diff_swh'].tolist()
+                        att_percent = difference_swh_mt[num]['att_swh'].tolist()
+                        diff_energy =  difference_swh_mt[num]['diff_energy'].tolist()
+                        att_energy =   difference_swh_mt[num]['att_energy'].tolist()
+                        differences_swh.extend(swhs_diff)
+                        attenuation_perecent_swh.extend(att_percent)
+                        differences_energy.extend(diff_energy)
+                        attenuation_perecent_energy.extend(att_energy)
                 
-                differences_swh_mt=[*differences_swh_mt, *diff_swh_mt]
-                print(diff_swh_mt)
-                print(np.nanmean(diff_swh_mt))
-                attenuation_perecent_swh_mt=[*attenuation_perecent_swh_mt, *att_swh_mt]
-                differences_alt_m=[*differences_alt_m, *diff_energy_mt]
-                attenuation_perecent_alt_m=[*attenuation_perecent_alt_m, *att_energy_mt]
-    print('mean swh att from mt', np.nanmean(differences_swh_mt))
-    print('std swh att from mt', np.nanstd(differences_swh_mt))  
-    print('mean swh att from sat', np.nanmean(differences_swh))
-    print('std swh att from sat', np.nanstd(differences_swh))                       '''
-    energy_modeled_tr[ss] = pd.DataFrame({'differences': differences_energy,
-                                        'attenuation': attenuation_perecent_energy})     
-    swh_modeled_tr[ss] = pd.DataFrame({'differences': differences_swh,
-                                        'attenuation': attenuation_perecent_swh})
-    #corr.append(corr_ss)
+        energy_modeled_tr[ss] = pd.DataFrame({'differences': differences_energy,
+                                            'attenuation': attenuation_perecent_energy})     
+        swh_modeled_tr[ss] = pd.DataFrame({'differences': differences_swh,
+                                            'attenuation': attenuation_perecent_swh})
+        #corr.append(corr_ss)
 
-#add finction to add nan values if the arrayes not the same lenght (not needed?)
 end_time=time.time()
 print("Execution time = ", (end_time-start_time)/60 , 'minutes')
  #%%caclulate stats
